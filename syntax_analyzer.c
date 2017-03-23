@@ -46,9 +46,14 @@ void error();
 // take arguement
 // more than one input, insde main....
 // 
-void main() {
-/* Open the input data file and process its contents */
-	if ((in_fp = fopen("front.in", "r")) == NULL)
+
+
+
+
+void main(int argc, char *argv[]) {
+
+
+	if ((in_fp = fopen(argv[1], "r")) == NULL)
 	printf("ERROR - cannot open front.in \n");
 	else {
 	getChar();
@@ -58,6 +63,28 @@ void main() {
 	} while (nextToken != EOF);
 }
 }
+
+
+
+// void main(int argc, char *argv[]) {
+// /* Open the input data file and process its contents */
+	
+	
+// 		FILE *file = fopen( argv[1], "r");
+// 		if (file == 0){
+// 			printf("ERROR - cannot open front.in \n");
+// 		}
+// 		else {
+// 			getChar();
+// 			do {
+// 			lex();
+// 			expr();
+// 			} while (nextToken != EOF);
+//     	}
+// 	}
+
+
+
 /*****************************************************/
 /* lookup - a function to lookup operators and parentheses
 and return the token */
