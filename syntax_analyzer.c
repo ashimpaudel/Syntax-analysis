@@ -43,6 +43,9 @@ void error();
 
 /******************************************************/
 /* main driver */
+// take arguement
+// more than one input, insde main....
+// 
 void main() {
 /* Open the input data file and process its contents */
 	if ((in_fp = fopen("front.in", "r")) == NULL)
@@ -94,6 +97,7 @@ int lookup(char ch) {
 
 void error(){
 	printf("Error");
+	exit(0);
 }
 
 
