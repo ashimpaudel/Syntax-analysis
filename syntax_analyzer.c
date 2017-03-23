@@ -123,7 +123,7 @@ int lookup(char ch) {
 }
 
 void error(){
-	printf("Error");
+	printf("Error in %s"), lexeme;
 	exit(0);
 }
 
