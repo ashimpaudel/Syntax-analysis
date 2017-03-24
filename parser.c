@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 
@@ -24,6 +25,7 @@ char * line = NULL;
 
 
 int i_index = 0;
+char prev_next_char;
 
 
 
@@ -71,38 +73,38 @@ int main(int argc, char *argv[]) {
 		printf("ERROR - cannot open front.in \n");
 	else {
 		
-		while ((read = getline(&line, &len, in_fp)) != -1) {
-			printf("\n*************************\n");
-			i_index = 0; //resetting index
-			getChar();
-			do {
-				lex();
-				expr();
-			} while (nextToken != EOF);
+		while ((read = getline(&line, &len, in_fp)) != -1) { // reading line by line from input file
+			int spaceFind = 1;
+			for(int i = 0; i < strlen(line); i++){
+				if(line[i] == ' ')
+					spaceFind = 0;
+				else
+					break;
+			}
+			if(spaceFind == 0){
+				printf("only space found..........");
+				continue;
+			}
+			// if (line[0] == ' ' && line[1] == '\n'){
+			// 	printf("only space found..........");
+			// 	continue;
+			// }
+			else{
+
+				prev_next_char = ' ';
+				printf("\n*************************\n");
+				i_index = 0; //resetting index
+				getChar();
+				do {
+					lex();
+					expr();
+				} while (nextToken != EOF);
+			}
 		}
 	}
 	return 0;
 
 }
-
-
-
-// void main(int argc, char *argv[]) {
-// /* Open the input data file and process its contents */
-	
-	
-// 		FILE *file = fopen( argv[1], "r");
-// 		if (file == 0){
-// 			printf("ERROR - cannot open front.in \n");
-// 		}
-// 		else {
-// 			getChar();
-// 			do {
-// 			lex();
-// 			expr();
-// 			} while (nextToken != EOF);
-//     	}
-// 	}
 
 
 
@@ -144,9 +146,17 @@ int lookup(char ch) {
 }
 
 void error(){
-	printf("\n\n\nError in %s\n\n\n", lexeme);
+
+
+		if(prev_next_char == ' '){ //error is found at space so we need to get the next character i.e. error
+			//printf("inside space...............................\n");
+			printf("\n\n\nError in %c\n\n\n", nextChar);}
+		else
+			printf("\n\n\nError in %s\n\n\n", lexeme); // or else printing the current lexemme
+	}
+	
 	//exit(0);
-}
+
 
 
 
@@ -164,7 +174,8 @@ void addChar() {
 /* getChar - a function to get the next character of
 input and determine its character class */
 void getChar() {
-	if (line[i_index] != '\n') {
+	if (line[i_index] != '\n' && line[i_index] != '\0') {
+		prev_next_char = nextChar;
 		nextChar = line[i_index];
 		i_index = i_index + 1;
 		if (isalpha(nextChar))
