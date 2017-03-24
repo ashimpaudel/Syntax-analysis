@@ -1,5 +1,7 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 
 
@@ -12,6 +14,12 @@ int lexLen;
 int token;
 int nextToken;
 FILE *in_fp, *fopen();
+char * line = NULL;
+size_t len = 0;
+ssize_t read;
+int i_index = 0;
+
+
 
 
 /* Function declarations */
@@ -50,18 +58,24 @@ void error();
 
 
 
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
 
 	if ((in_fp = fopen(argv[1], "r")) == NULL)
-	printf("ERROR - cannot open front.in \n");
+		printf("ERROR - cannot open front.in \n");
 	else {
-	getChar();
-	do {
-	lex();
-	expr();
-	} while (nextToken != EOF);
-}
+		
+		while ((read = getline(&line, &len, in_fp)) != 1){
+			i_index = 0; //resetting index
+			getChar();
+			do {
+				lex();
+				expr();
+			} while (nextToken != EOF);
+		}
+	}
+	return 0;
+
 }
 
 
@@ -123,7 +137,7 @@ int lookup(char ch) {
 }
 
 void error(){
-	printf("Error in %s"), lexeme;
+	printf("Error in %s", lexeme);
 	exit(0);
 }
 
@@ -143,7 +157,9 @@ void addChar() {
 /* getChar - a function to get the next character of
 input and determine its character class */
 void getChar() {
-	if ((nextChar = getc(in_fp)) != EOF) {
+	if (line[i_index] != '\0') {
+		nextChar = line[i_index];
+		i_index = i_index + 1;
 	if (isalpha(nextChar))
 	charClass = LETTER;
 	else if (isdigit(nextChar))
@@ -262,24 +278,26 @@ void factor() {
 	printf("Enter <factor>\n");
 	/* Determine which RHS */
 	if (nextToken == IDENT || nextToken == INT_LIT)
-		/* Get the next token */
-	lex();
-	/* If the RHS is ( <expr>), call lex to pass over the
-	left parenthesis, call expr, and check for the right
-	parenthesis */
-	else {
-	if (nextToken == LEFT_PAREN) {
-	lex();
-	expr();
-	if (nextToken == RIGHT_PAREN)
-	lex();
-	else
-	error();
-	} /* End of if (nextToken == ... */
-	/* It was not an id, an integer literal, or a left
-	parenthesis */
-	else
-	error();
-	} /* End of else */
+			/* Get the next token */
+		lex();
+		/* If the RHS is ( <expr>), call lex to pass over the
+		left parenthesis, call expr, and check for the right
+		parenthesis */
+		else {
+			if (nextToken == LEFT_PAREN) {
+				lex();
+				expr();
+				if (nextToken == RIGHT_PAREN)
+					lex();
+				else
+					error();
+			} /* End of if (nextToken == ... */
+		/* It was not an id, an integer literal, or a left
+		parenthesis */
+			else
+			error();
+		} /* End of else */
+
 	printf("Exit <factor>\n");;
-} /* End of function factor */
+} 
+/* End of function factor */
