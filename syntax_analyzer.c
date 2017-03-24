@@ -139,7 +139,7 @@ int lookup(char ch) {
 
 void error(){
 	printf("Error in %s", lexeme);
-	exit(0);
+	
 }
 
 
