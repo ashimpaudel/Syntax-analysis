@@ -1,3 +1,4 @@
+
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <ctype.h>
@@ -14,9 +15,14 @@ int lexLen;
 int token;
 int nextToken;
 FILE *in_fp, *fopen();
-char * line = NULL;
+
+
+
 size_t len = 0;
 ssize_t read;
+char * line = NULL;
+
+
 int i_index = 0;
 
 
@@ -65,7 +71,7 @@ int main(int argc, char *argv[]) {
 		printf("ERROR - cannot open front.in \n");
 	else {
 		
-		while ((read = getline(&line, &len, in_fp)) != 1){
+		while ((read = getline(&line, &len, in_fp)) != -1) {
 			printf("\n*************************\n");
 			i_index = 0; //resetting index
 			getChar();
@@ -138,8 +144,8 @@ int lookup(char ch) {
 }
 
 void error(){
-	printf("Error in %s", lexeme);
-	
+	printf("\n\n\nError in %s\n\n\n", lexeme);
+	//exit(0);
 }
 
 
@@ -224,11 +230,9 @@ int lex() {
 } /* End of function lex */
 /*
 Recursive descent parsing
-
 <expr> → <term> {(+ | -) <term>}
 <term> → <factor> {(* | /) <factor>}
 <factor> → id | int_constant | ( <expr> )
-
 */
 
 /* expr
